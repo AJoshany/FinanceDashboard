@@ -38,27 +38,28 @@ import { defineRule, ErrorMessage, Field, Form } from "vee-validate";
 import "./Login.css";
 import { required } from "@vee-validate/rules";
 import { ref } from "vue";
-import { useUsersStore } from "../../stores/users";
+
 import { useRouter } from "vue-router";
+import { useAuthStore } from "../../stores/auth";
 
 const username = ref("");
 const password = ref("");
 
-const usersStore = useUsersStore();
+const authStore = useAuthStore();
 
 const router = useRouter();
+defineRule("required", required);
 
-function handleSubmit() {
-  const loginResult = usersStore.login(username.value, password.value);
+async function handleSubmit() {
+  const loginResult = await authStore.signIn(username.value, password.value);
+  console.log(loginResult);
   if (loginResult) {
     alert("login successfully");
-    router.push("/appointments");
+    router.push("/dashboard");
   } else {
     alert("Invalid User Data");
   }
 }
-
-defineRule("required", required);
 </script>
 
 <style></style>
