@@ -36,9 +36,9 @@
 import { defineRule, ErrorMessage, Field, Form } from "vee-validate";
 import "./Login.css";
 import { required } from "@vee-validate/rules";
-import { useUsersStore } from "../../stores/users";
 import { useRouter } from "vue-router";
 import { ref } from "vue";
+import { useAuthStore } from "../../stores/auth";
 
 defineRule("required", required);
 
@@ -46,16 +46,16 @@ const username = ref("");
 const password = ref("");
 const router = useRouter();
 
-const userStore = useUsersStore();
+const authStore = useAuthStore();
 
-function handleSubmit() {
-  userStore.addUser({
-    id: Date.now(),
-    username: username.value,
-    password: password.value,
-    apointments:[],
-  });
-  router.push("/appointments");
+async function handleSubmit() {
+  const data = await authStore.signUp(username.value, password.value);
+  if (data) {
+    alert("Sign Up Successfully");
+    router.push("/appointments");
+  } else {
+    alert("Error");
+  }
 }
 </script>
 
