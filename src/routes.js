@@ -11,7 +11,6 @@ const authStore = useAuthStore(pinia);
 
 async function isLogin() {
   await authStore.fetchUser();
-
   if (authStore.user) return true;
   return false;
 }

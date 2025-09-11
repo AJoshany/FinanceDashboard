@@ -1,6 +1,6 @@
 <template>
   <div class="login-page">
-    <div class="form">
+    <div class="form" v-if="!authStore.isLoading">
       <Form class="login-form" @submit="handleSubmit">
         <div class="login-input">
           <Field
@@ -29,6 +29,10 @@
         </p>
       </Form>
     </div>
+    <div v-else>
+      <div class="loading-backdrop"></div>
+      <div class="loading-container">Loading ....</div>
+    </div>
   </div>
 </template>
 
@@ -51,10 +55,10 @@ const authStore = useAuthStore();
 async function handleSubmit() {
   const data = await authStore.signUp(username.value, password.value);
   if (data) {
-    alert("Sign Up Successfully");
+    // alert("Sign Up Successfully");
     router.push("/dashboard");
   } else {
-    alert("Error");
+    // alert("Error");
   }
 }
 </script>

@@ -30,6 +30,10 @@
         </p>
       </Form>
     </div>
+    <div v-show="authStore.isLoading">
+      <div class="loading-backdrop"></div>
+      <div class="loading-container">Loading ....</div>
+    </div>
   </div>
 </template>
 
