@@ -1,0 +1,65 @@
+<template>
+  <div class="top-nav-main" :class="{ 'black-back': mobileToggler }">
+    <button @click="toggleHandler" v-if="mobileToggler">❌</button>
+    <Transition name="fade" v-if="mobileToggler">
+      <nav class="top-nav">
+        <router-link to="/dashboard">Home</router-link>
+        <router-link to="/dashboard">Transactions</router-link>
+        <router-link to="/dashboard">About</router-link>
+      </nav>
+    </Transition>
+    <button @click="toggleHandler" v-else>|||</button>
+  </div>
+</template>
+
+<script setup>
+import { ref, Transition } from "vue";
+
+let mobileToggler = ref(false);
+
+function toggleHandler() {
+  mobileToggler.value = !mobileToggler.value;
+}
+</script>
+
+<style scoped>
+.top-nav-main {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.black-back {
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+.top-nav-main button {
+  padding: 15px;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  border-bottom: 4px solid white;
+}
+.top-nav {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.top-nav a {
+  width: 100%;
+
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-bottom: 3px solid rgba(255, 255, 255, 0.7);
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 1s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>
