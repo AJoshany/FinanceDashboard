@@ -4,7 +4,7 @@
     <Transition name="fade" v-if="mobileToggler">
       <nav class="top-nav">
         <router-link to="/dashboard">Home</router-link>
-        <router-link to="/dashboard">Transactions</router-link>
+        <router-link to="/transactions">Transactions</router-link>
         <router-link to="/dashboard">About</router-link>
       </nav>
     </Transition>
@@ -25,13 +25,16 @@ function toggleHandler() {
 <style scoped>
 .top-nav-main {
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 0;
+  right: 0;
   display: flex;
   flex-direction: column;
 }
 
 .black-back {
   background-color: rgba(0, 0, 0, 0.6);
+  bottom: 0;
 }
 
 .top-nav-main button {
