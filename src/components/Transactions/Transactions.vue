@@ -2,7 +2,18 @@
   <div>
     <NavBar />
     <div>
-      <form class="add-form">
+      <form class="add-form" @submit.prevent="handleSubmit" v-if="showForm">
+        <div class="input-container">
+          <input
+            v-model="title"
+            type="text"
+            id="title"
+            class="styled_input_bar"
+            placeholder=""
+            required
+          />
+          <label for="title" class="input-label">Title</label>
+        </div>
         <div class="input-container">
           <input
             v-model="amount"
@@ -10,6 +21,7 @@
             id="amount"
             class="styled_input_bar"
             placeholder=""
+            required
           />
           <label for="amount" class="input-label">Amount</label>
         </div>
@@ -18,9 +30,11 @@
             <input
               type="radio"
               name="type"
-              value="0"
+              value="deposit"
               id="deposit"
               v-model="typeOfTransaction"
+              required
+              checked
             />
             <label for="deposit">Deposit</label>
           </div>
@@ -28,9 +42,10 @@
             <input
               type="radio"
               name="type"
-              value="0"
+              value="withdraw"
               id="withdraw"
               v-model="typeOfTransaction"
+              required
             />
             <label for="withdraw">Withdraw</label>
           </div>
@@ -43,23 +58,101 @@
             id="date"
             class="styled_input_bar"
             placeholder=""
+            required
           />
           <!-- <label for="date" class="input-label">Date</label> -->
         </div>
-
+        <select
+          v-model="category"
+          class="category"
+          v-if="typeOfTransaction === 'withdraw'"
+          required
+        >
+          <option disabled value="">Please select one</option>
+          <option>Food</option>
+          <option>Transport</option>
+          <option>Housing</option>
+          <option>Shopping</option>
+          <option>Health</option>
+          <option>Fun</option>
+          <option>Education</option>
+          <option>Other</option>
+        </select>
+        <select v-model="category" class="category" v-else required>
+          <option disabled value="">Please select one</option>
+          <option>Salary</option>
+          <option>Business</option>
+          <option>Investment</option>
+          <option>Gift</option>
+          <option>Other</option>
+        </select>
         <button class="submit-btn" type="submit">Add</button>
+        <p v-if="success" class="text-green-500">Successfull</p>
+        <p v-if="unSuccess" class="text-red-500">Unsuccessful</p>
       </form>
+      <ul v-else>
+        <li v-for="tranc in allTrancs" :key="tranc.id">
+          {{ tranc.title }} -- {{ tranc.amount }} --
+          {{ new Date(tranc.date).toISOString().split("T")[0] }}--
+          {{ tranc.category }}
+        </li>
+      </ul>
+      <button class="goToBtn" @click="handleShow">
+        &lt;&lt;
+        {{ showForm ? "Go To List" : " Add Transaction" }}
+      </button>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import NavBar from "../NavBar/NavBar.vue";
+import { useTrancStore } from "../../stores/transactions";
 
+const title = ref("");
 const amount = ref();
-const typeOfTransaction = ref("");
+const typeOfTransaction = ref("deposit");
 const date = ref();
+const category = ref("");
+const success = ref(false);
+const unSuccess = ref(false);
+
+const showForm = ref(true);
+
+const trancStore = useTrancStore();
+const allTrancs = ref();
+
+async function handleSubmit(event) {
+  const data = await trancStore.addTranc({
+    amount: amount.value,
+    title: title.value,
+    type: typeOfTransaction.value,
+    date: date.value,
+    category: category.value,
+  });
+  if (data) {
+    success.value = true;
+    unSuccess.value = false;
+  } else {
+    unSuccess.value = true;
+    success.value = false;
+  }
+  event.target.reset();
+  title.value = "";
+  amount.value = "";
+  typeOfTransaction.value = "";
+  date.value = "";
+  // success.value = false;
+  // unSuccess.value = false;
+}
+
+function handleShow() {
+  showForm.value = !showForm.value;
+}
+onMounted(async () => {
+  allTrancs.value = await trancStore.getTrancs();
+});
 </script>
 
 <style scoped>
@@ -135,5 +228,20 @@ const date = ref();
   display: flex;
   gap: 5px;
   align-items: center;
+}
+
+.goToBtn {
+  position: fixed;
+  left: 20px;
+  bottom: 20px;
+  color: #43a047;
+  font-weight: 600;
+}
+
+.category {
+  background-color: #fff;
+  padding: 1em;
+  border-radius: 2em;
+  color: black;
 }
 </style>
