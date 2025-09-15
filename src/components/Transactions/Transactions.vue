@@ -1,6 +1,10 @@
 <template>
   <div>
     <NavBar />
+    <div v-show="authStore.isLoading">
+      <div class="loading-backdrop"></div>
+      <div class="loading-container">Loading ....</div>
+    </div>
     <div class="tranc-container">
       <!-- Add Transaction Form -->
       <div v-if="showForm" class="form-container">
@@ -111,22 +115,53 @@
             <label for="search" class="input-label">Search</label>
           </div>
 
-          <button>///</button>
+          <button @click="handleFilterShow">
+            <i
+              class="fa fa-filter"
+              aria-hidden="true"
+              style="font-size: 24px"
+            ></i>
+          </button>
         </div>
-        <ul>
+
+        <ul class="tranc-list">
           <li v-for="tranc in trancStore.filteredTrancs" :key="tranc.id">
-            {{ tranc.title }} -- {{ tranc.amount }} --
-            {{ new Date(tranc.date).toISOString().split("T")[0] }}--
-            {{ tranc.category }}
+            <div class="tranc-item">
+              <span class="trancTitle">{{ tranc.title }}</span>
+              <span
+                class="trancAmount"
+                :class="{
+                  'text-green-500': tranc.type === 'deposit',
+                  'text-red-500': tranc.type === 'withdraw',
+                }"
+                >{{ tranc.amount }}$</span
+              >
+              <span class="trancCategory">{{ tranc.category }}</span>
+              <span class="trancDate">{{
+                new Date(tranc.date)
+                  .toISOString()
+                  .split("T")[0]
+                  .split("-")
+                  .slice(1)
+                  .join("/")
+              }}</span>
+            </div>
           </li>
         </ul>
-      </div>
 
+        <button @click="resetFilters" class="resetBtn">Reset</button>
+      </div>
       <button class="goToBtn" @click="handleShow">
         &lt;&lt;
         {{ showForm ? "Go To List" : " Add Transaction" }}
       </button>
     </div>
+    <FilterTranc
+      class="filter-comp"
+      v-if="showFilterComp"
+      @onClose="handleFilterShow"
+    />
+    <div class="footer-line"></div>
   </div>
 </template>
 
@@ -134,6 +169,8 @@
 import { onMounted, ref } from "vue";
 import NavBar from "../NavBar/NavBar.vue";
 import { useTrancStore } from "../../stores/transactions";
+import { useAuthStore } from "../../stores/auth";
+import FilterTranc from "./FilterTranc.vue";
 
 const title = ref("");
 const amount = ref();
@@ -143,8 +180,11 @@ const category = ref("");
 const success = ref(false);
 const unSuccess = ref(false);
 const titleSearch = ref("");
+const showFilterComp = ref(false);
 
 const showForm = ref(true);
+
+const authStore = useAuthStore();
 
 const trancStore = useTrancStore();
 
@@ -156,6 +196,7 @@ async function handleSubmit(event) {
     date: date.value,
     category: category.value,
   });
+  console.log(category.value);
   if (data) {
     success.value = true;
     unSuccess.value = false;
@@ -168,12 +209,20 @@ async function handleSubmit(event) {
   amount.value = "";
   typeOfTransaction.value = "";
   date.value = "";
+  category.value = "";
   // success.value = false;
   // unSuccess.value = false;
 }
 
 function handleShow() {
   showForm.value = !showForm.value;
+  success.value = false;
+  unSuccess.value = false;
+  trancStore.filteredTrancs = trancStore.allTrancs;
+}
+
+function resetFilters() {
+  trancStore.filteredTrancs = trancStore.allTrancs;
 }
 onMounted(async () => {
   await trancStore.getTrancs();
@@ -181,6 +230,10 @@ onMounted(async () => {
 
 function searchHandler() {
   trancStore.filterByTitle(titleSearch.value);
+}
+
+function handleFilterShow() {
+  showFilterComp.value = !showFilterComp.value;
 }
 </script>
 
@@ -272,6 +325,15 @@ function searchHandler() {
   bottom: 20px;
   color: #43a047;
   font-weight: 600;
+  z-index: 11;
+}
+
+.resetBtn {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  font-weight: 600;
+  z-index: 11;
 }
 
 .category {
@@ -284,5 +346,63 @@ function searchHandler() {
 .search-sec {
   display: flex;
   gap: 10px;
+}
+
+.filter-comp {
+  position: fixed;
+  inset: 0;
+  background-color: rgb(47, 47, 47);
+}
+
+.tranc-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+  margin-bottom: 60px;
+}
+.tranc-item {
+  box-sizing: content-box;
+  padding: 15px 20px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background-color: rgb(62, 62, 62);
+  border-radius: 6px;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.trancTitle {
+  padding-right: 10px;
+  font-weight: 600;
+}
+
+.trancAmount {
+  padding-right: 10px;
+  font-weight: 600;
+}
+
+.trancCategory {
+  font-size: 12px;
+  opacity: 70%;
+}
+
+.trancDate {
+  font-size: 12px;
+  opacity: 70%;
+}
+
+.footer-line {
+  width: 100%;
+  height: 60px;
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  background-color: black;
+  border-top: 4px solid white;
+  z-index: 10;
 }
 </style>

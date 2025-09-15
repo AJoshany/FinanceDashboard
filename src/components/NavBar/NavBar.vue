@@ -1,6 +1,8 @@
 <template>
   <div class="top-nav-main" :class="{ 'black-back': mobileToggler }">
-    <button @click="toggleHandler" v-if="mobileToggler">❌</button>
+    <button @click="toggleHandler" v-if="mobileToggler">
+      <i class="fa fa-times" aria-hidden="true"></i>
+    </button>
     <Transition name="fade" v-if="mobileToggler">
       <nav class="top-nav">
         <router-link to="/dashboard">Home</router-link>
@@ -8,7 +10,9 @@
         <router-link to="/dashboard">About</router-link>
       </nav>
     </Transition>
-    <button @click="toggleHandler" v-else>|||</button>
+    <button @click="toggleHandler" v-else>
+      <i class="fa fa-bars" aria-hidden="true"></i>
+    </button>
   </div>
 </template>
 

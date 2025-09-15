@@ -51,5 +51,16 @@ export const useTrancStore = defineStore("Tranc", {
         return tranc.title.toLowerCase().startsWith(title.toLowerCase());
       });
     },
+    filterTranc(option) {
+      this.filteredTrancs = this.allTrancs.filter((tranc) => {
+        if (option.category) {
+          return (
+            tranc.type === option.type && tranc.category === option.category
+          );
+        } else {
+          return tranc.type === option.type;
+        }
+      });
+    },
   },
 });

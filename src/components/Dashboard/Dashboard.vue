@@ -1,5 +1,9 @@
 <template>
   <div>
+    <div v-show="authStore.isLoading">
+      <div class="loading-backdrop"></div>
+      <div class="loading-container">Loading ....</div>
+    </div>
     <NavBar />
     <button @click="handleLogOut">logout</button>
   </div>
