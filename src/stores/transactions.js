@@ -6,6 +6,7 @@ const router = useRouter();
 export const useTrancStore = defineStore("Tranc", {
   state: () => ({
     allTrancs: [],
+    filteredTrancs: [],
   }),
   actions: {
     async addTranc(tranc) {
@@ -38,7 +39,17 @@ export const useTrancStore = defineStore("Tranc", {
 
       if (error) throw error;
       this.allTrancs = data;
+      this.filteredTrancs = data;
       return data;
+    },
+
+    filterByTitle(title) {
+      if (title === "") {
+        this.filteredTrancs = this.allTrancs;
+      }
+      this.filteredTrancs = this.allTrancs.filter((tranc) => {
+        return tranc.title.toLowerCase().startsWith(title.toLowerCase());
+      });
     },
   },
 });

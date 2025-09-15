@@ -1,102 +1,127 @@
 <template>
   <div>
     <NavBar />
-    <div>
-      <form class="add-form" @submit.prevent="handleSubmit" v-if="showForm">
-        <div class="input-container">
-          <input
-            v-model="title"
-            type="text"
-            id="title"
-            class="styled_input_bar"
-            placeholder=""
-            required
-          />
-          <label for="title" class="input-label">Title</label>
-        </div>
-        <div class="input-container">
-          <input
-            v-model="amount"
-            type="text"
-            id="amount"
-            class="styled_input_bar"
-            placeholder=""
-            required
-          />
-          <label for="amount" class="input-label">Amount</label>
-        </div>
-        <div class="radio-group">
-          <div class="radio">
+    <div class="tranc-container">
+      <!-- Add Transaction Form -->
+      <div v-if="showForm" class="form-container">
+        <h1>Add Transaction</h1>
+        <form class="add-form" @submit.prevent="handleSubmit">
+          <div class="input-container">
             <input
-              type="radio"
-              name="type"
-              value="deposit"
-              id="deposit"
-              v-model="typeOfTransaction"
-              required
-              checked
-            />
-            <label for="deposit">Deposit</label>
-          </div>
-          <div class="radio">
-            <input
-              type="radio"
-              name="type"
-              value="withdraw"
-              id="withdraw"
-              v-model="typeOfTransaction"
+              v-model="title"
+              type="text"
+              id="title"
+              class="styled_input_bar"
+              placeholder=""
               required
             />
-            <label for="withdraw">Withdraw</label>
+            <label for="title" class="input-label">Title</label>
           </div>
-        </div>
+          <div class="input-container">
+            <input
+              v-model="amount"
+              type="text"
+              id="amount"
+              class="styled_input_bar"
+              placeholder=""
+              required
+            />
+            <label for="amount" class="input-label">Amount</label>
+          </div>
+          <div class="radio-group">
+            <div class="radio">
+              <input
+                type="radio"
+                name="type"
+                value="deposit"
+                id="deposit"
+                v-model="typeOfTransaction"
+                required
+                checked
+              />
+              <label for="deposit">Deposit</label>
+            </div>
+            <div class="radio">
+              <input
+                type="radio"
+                name="type"
+                value="withdraw"
+                id="withdraw"
+                v-model="typeOfTransaction"
+                required
+              />
+              <label for="withdraw">Withdraw</label>
+            </div>
+          </div>
 
-        <div class="input-container">
-          <input
-            v-model="date"
-            type="date"
-            id="date"
-            class="styled_input_bar"
-            placeholder=""
+          <div class="input-container">
+            <input
+              v-model="date"
+              type="date"
+              id="date"
+              class="styled_input_bar"
+              placeholder=""
+              required
+            />
+            <!-- <label for="date" class="input-label">Date</label> -->
+          </div>
+          <select
+            v-model="category"
+            class="category"
+            v-if="typeOfTransaction === 'withdraw'"
             required
-          />
-          <!-- <label for="date" class="input-label">Date</label> -->
+          >
+            <option disabled value="">Please select one</option>
+            <option>Food</option>
+            <option>Transport</option>
+            <option>Housing</option>
+            <option>Shopping</option>
+            <option>Health</option>
+            <option>Fun</option>
+            <option>Education</option>
+            <option>Other</option>
+          </select>
+          <select v-model="category" class="category" v-else required>
+            <option disabled value="">Please select one</option>
+            <option>Salary</option>
+            <option>Business</option>
+            <option>Investment</option>
+            <option>Gift</option>
+            <option>Other</option>
+          </select>
+          <button class="submit-btn" type="submit">Add</button>
+          <p v-if="success" class="text-green-500">Successfull</p>
+          <p v-if="unSuccess" class="text-red-500">Unsuccessful</p>
+        </form>
+      </div>
+
+      <!-- Transaction List -->
+      <div v-else>
+        <h1>Transactions List</h1>
+        <div class="search-sec">
+          <div class="input-container">
+            <input
+              type="text"
+              placeholder=""
+              id="search"
+              class="styled_input_bar"
+              v-model="titleSearch"
+              @input="searchHandler"
+            />
+            <label for="search" class="input-label">Search</label>
+          </div>
+
+          <button>///</button>
         </div>
-        <select
-          v-model="category"
-          class="category"
-          v-if="typeOfTransaction === 'withdraw'"
-          required
-        >
-          <option disabled value="">Please select one</option>
-          <option>Food</option>
-          <option>Transport</option>
-          <option>Housing</option>
-          <option>Shopping</option>
-          <option>Health</option>
-          <option>Fun</option>
-          <option>Education</option>
-          <option>Other</option>
-        </select>
-        <select v-model="category" class="category" v-else required>
-          <option disabled value="">Please select one</option>
-          <option>Salary</option>
-          <option>Business</option>
-          <option>Investment</option>
-          <option>Gift</option>
-          <option>Other</option>
-        </select>
-        <button class="submit-btn" type="submit">Add</button>
-        <p v-if="success" class="text-green-500">Successfull</p>
-        <p v-if="unSuccess" class="text-red-500">Unsuccessful</p>
-      </form>
-      <ul v-else>
-        <li v-for="tranc in allTrancs" :key="tranc.id">
-          {{ tranc.title }} -- {{ tranc.amount }} --
-          {{ new Date(tranc.date).toISOString().split("T")[0] }}--
-          {{ tranc.category }}
-        </li>
-      </ul>
+        <ul>
+          <li v-for="tranc in trancStore.filteredTrancs" :key="tranc.id">
+            {{ tranc.title }} -- {{ tranc.amount }} --
+            {{ new Date(tranc.date).toISOString().split("T")[0] }}--
+            {{ tranc.category }}
+          </li>
+        </ul>
+      </div>
+
       <button class="goToBtn" @click="handleShow">
         &lt;&lt;
         {{ showForm ? "Go To List" : " Add Transaction" }}
@@ -117,11 +142,11 @@ const date = ref();
 const category = ref("");
 const success = ref(false);
 const unSuccess = ref(false);
+const titleSearch = ref("");
 
 const showForm = ref(true);
 
 const trancStore = useTrancStore();
-const allTrancs = ref();
 
 async function handleSubmit(event) {
   const data = await trancStore.addTranc({
@@ -151,8 +176,12 @@ function handleShow() {
   showForm.value = !showForm.value;
 }
 onMounted(async () => {
-  allTrancs.value = await trancStore.getTrancs();
+  await trancStore.getTrancs();
 });
+
+function searchHandler() {
+  trancStore.filterByTitle(titleSearch.value);
+}
 </script>
 
 <style scoped>
@@ -160,6 +189,13 @@ onMounted(async () => {
   display: flex;
   flex-direction: column;
   gap: 30px;
+}
+
+.tranc-container h1 {
+  text-align: center;
+  font-size: 20px;
+  margin-bottom: 20px;
+  font-weight: bold;
 }
 
 /* From Uiverse.io by chris_6688 */
@@ -243,5 +279,10 @@ onMounted(async () => {
   padding: 1em;
   border-radius: 2em;
   color: black;
+}
+
+.search-sec {
+  display: flex;
+  gap: 10px;
 }
 </style>
