@@ -1,9 +1,13 @@
 <script setup></script>
 
 <template>
-  <div>
+  <div class="main-app">
     <router-view></router-view>
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.main-app {
+  width: 100%;
+}
+</style>

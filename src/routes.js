@@ -5,6 +5,7 @@ import SignUp from "./components/Login/SignUp.vue";
 import { useAuthStore } from "./stores/auth";
 import { supabase } from "./supabase";
 import { createPinia } from "pinia";
+import Transactions from "./components/Transactions/Transactions.vue";
 
 const pinia = createPinia();
 const authStore = useAuthStore(pinia);
@@ -40,6 +41,17 @@ const routes = [
   {
     path: "/dashboard",
     component: Dashboard,
+    beforeEnter: async (to, from, next) => {
+      if (await isLogin()) {
+        next();
+      } else {
+        next("/");
+      }
+    },
+  },
+  {
+    path: "/transactions",
+    component: Transactions,
     beforeEnter: async (to, from, next) => {
       if (await isLogin()) {
         next();
