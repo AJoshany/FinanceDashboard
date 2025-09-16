@@ -3,13 +3,16 @@
     <button @click="toggleHandler" v-if="mobileToggler">
       <i class="fa fa-times" aria-hidden="true"></i>
     </button>
-    <Transition name="fade" v-if="mobileToggler">
-      <nav class="top-nav">
+
+    <nav class="top-nav" v-if="mobileToggler">
+      <div class="top-nav__container">
         <router-link to="/dashboard">Home</router-link>
         <router-link to="/transactions">Transactions</router-link>
         <router-link to="/dashboard">About</router-link>
-      </nav>
-    </Transition>
+      </div>
+      <a @click="handleLogOut">logout</a>
+    </nav>
+
     <button @click="toggleHandler" v-else>
       <i class="fa fa-bars" aria-hidden="true"></i>
     </button>
@@ -24,6 +27,10 @@ let mobileToggler = ref(false);
 function toggleHandler() {
   mobileToggler.value = !mobileToggler.value;
 }
+async function handleLogOut() {
+  await authStore.signOut();
+  router.push("/");
+}
 </script>
 
 <style scoped>
@@ -37,7 +44,7 @@ function toggleHandler() {
 }
 
 .black-back {
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: rgba(0, 0, 0, 0.9);
   bottom: 0;
 }
 
@@ -48,6 +55,14 @@ function toggleHandler() {
   border-bottom: 4px solid white;
 }
 .top-nav {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  height: 100%;
+}
+.top-nav__container {
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
