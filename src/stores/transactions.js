@@ -7,6 +7,7 @@ export const useTrancStore = defineStore("Tranc", {
   state: () => ({
     allTrancs: [],
     filteredTrancs: [],
+    balance: 0,
   }),
   actions: {
     async addTranc(tranc) {
@@ -61,6 +62,58 @@ export const useTrancStore = defineStore("Tranc", {
           return tranc.type === option.type;
         }
       });
+    },
+    async getBalance() {
+      await this.getTrancs();
+      const depositAmounts = this.allTrancs
+        .filter((tranc) => {
+          return tranc.type === "deposit";
+        })
+        .map((t) => Number(t.amount))
+        .reduce((acc, curr) => acc + curr);
+
+      const withdrawAmounts = this.allTrancs
+        .filter((tranc) => {
+          return tranc.type === "withdraw";
+        })
+        .map((t) => Number(t.amount))
+        .reduce((acc, curr) => acc + curr);
+
+      const totalBallance = depositAmounts - withdrawAmounts;
+      this.balance = totalBallance;
+      return {
+        balance: totalBallance,
+        totalDeposits: depositAmounts,
+        totalWithdraws: withdrawAmounts,
+      };
+    },
+
+    getCategoriesCount() {
+      const deposits = this.allTrancs.filter((tranc) => {
+        return tranc.type === "deposit";
+      });
+      // const depositCategories = [
+      //   ...new Set([...deposits.map((t) => t.category)]),
+      // ];
+      const depositCategories = deposits
+        .map((t) => t.category)
+        .reduce((acc, curr) => {
+          acc[curr] = (acc[curr] || 0) + 1;
+          return acc;
+        }, {});
+
+      const withdraws = this.allTrancs.filter((tranc) => {
+        return tranc.type === "withdraw";
+      });
+
+      const withdrawCategories = withdraws
+        .map((t) => t.category)
+        .reduce((acc, curr) => {
+          acc[curr] = (acc[curr] || 0) + 1;
+          return acc;
+        }, {});
+
+      return { depositCategories, withdrawCategories };
     },
   },
 });
