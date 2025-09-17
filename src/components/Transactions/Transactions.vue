@@ -68,7 +68,7 @@
               type="date"
               id="date"
               class="styled_input_bar"
-              placeholder=""
+              placeholder="Date"
               required
             />
             <!-- <label for="date" class="input-label">Date</label> -->
