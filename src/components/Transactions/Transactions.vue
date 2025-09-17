@@ -7,9 +7,13 @@
     </div>
     <div class="tranc-container">
       <!-- Add Transaction Form -->
-      <div v-if="showForm" class="form-container">
+      <div v-if="trancStore.showForm" class="form-container">
         <h1>Add Transaction</h1>
-        <form class="add-form" @submit.prevent="handleSubmit">
+        <form
+          class="add-form"
+          @submit.prevent="handleSubmit"
+          autocomplete="off"
+        >
           <div class="input-container">
             <input
               v-model="title"
@@ -153,7 +157,7 @@
       </div>
       <button class="goToBtn" @click="handleShow">
         &lt;&lt;
-        {{ showForm ? "Go To List" : " Add Transaction" }}
+        {{ trancStore.showForm ? "Go To List" : " Add Transaction" }}
       </button>
     </div>
     <FilterTranc
@@ -172,6 +176,9 @@ import { useTrancStore } from "../../stores/transactions";
 import { useAuthStore } from "../../stores/auth";
 import FilterTranc from "./FilterTranc.vue";
 
+const authStore = useAuthStore();
+const trancStore = useTrancStore();
+
 const title = ref("");
 const amount = ref();
 const typeOfTransaction = ref("deposit");
@@ -181,12 +188,6 @@ const success = ref(false);
 const unSuccess = ref(false);
 const titleSearch = ref("");
 const showFilterComp = ref(false);
-
-const showForm = ref(true);
-
-const authStore = useAuthStore();
-
-const trancStore = useTrancStore();
 
 async function handleSubmit(event) {
   const data = await trancStore.addTranc({
@@ -215,7 +216,7 @@ async function handleSubmit(event) {
 }
 
 function handleShow() {
-  showForm.value = !showForm.value;
+  trancStore.showForm = !trancStore.showForm;
   success.value = false;
   unSuccess.value = false;
   trancStore.filteredTrancs = trancStore.allTrancs;
@@ -325,7 +326,7 @@ function handleFilterShow() {
   bottom: 20px;
   color: #43a047;
   font-weight: 600;
-  z-index: 11;
+  z-index: 101;
 }
 
 .resetBtn {
@@ -333,7 +334,7 @@ function handleFilterShow() {
   right: 20px;
   bottom: 20px;
   font-weight: 600;
-  z-index: 11;
+  z-index: 101;
 }
 
 .category {
@@ -360,7 +361,7 @@ function handleFilterShow() {
   flex-direction: column;
   gap: 10px;
   margin-top: 20px;
-  margin-bottom: 60px;
+  margin-bottom: 75px;
 }
 .tranc-item {
   box-sizing: content-box;
@@ -403,6 +404,6 @@ function handleFilterShow() {
   left: 0;
   background-color: black;
   border-top: 4px solid white;
-  z-index: 10;
+  z-index: 100;
 }
 </style>

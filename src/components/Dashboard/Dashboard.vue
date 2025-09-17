@@ -33,13 +33,13 @@
       <div v-if="balance">
         <div class="dash__charts">
           <CircleChart
-            class="dash__chart"
+            class="dash__chart deposit__chart"
             :datas="categories"
             type="deposit"
             v-if="categories && totalDeposits"
           />
           <CircleChart
-            class="dash__chart withdraw__chart"
+            class="dash__chart"
             :datas="categories"
             type="withdraw"
             v-if="categories && totalWithdraws"
@@ -71,6 +71,7 @@
                   }}</span>
                 </div>
               </li>
+              <a @click="showMoreHandler" class="show-more-btn">show more</a>
             </ul>
           </div>
         </div>
@@ -108,6 +109,11 @@ const router = useRouter();
 async function handleLogOut() {
   await authStore.signOut();
   router.push("/");
+}
+
+function showMoreHandler() {
+  trancStore.showForm = false;
+  router.push("/transactions");
 }
 
 watchEffect(async () => {
@@ -184,10 +190,6 @@ watchEffect(async () => {
   font-size: 16px;
 }
 
-.withdraw__chart {
-  margin-top: -50px;
-}
-
 .empty-warning {
   width: 100%;
   display: flex;
@@ -215,14 +217,22 @@ watchEffect(async () => {
 
 .dash__last-trancs {
   text-align: center;
+  margin-top: 20px;
 }
 
 .dash__last-trancs h2 {
   font-size: 20px;
   font-weight: 600;
 }
-/* .dash__chart {
-  opacity: 0.5;
-  z-index: 1;
-} */
+.show-more-btn {
+  text-align: right;
+  font-size: 12px;
+  padding-right: 5px;
+  opacity: 60%;
+}
+
+.deposit__chart {
+  margin-top: 10px;
+  margin-bottom: -30px;
+}
 </style>

@@ -8,6 +8,7 @@ export const useTrancStore = defineStore("Tranc", {
     allTrancs: [],
     filteredTrancs: [],
     balance: 0,
+    showForm: true,
   }),
   actions: {
     async addTranc(tranc) {
@@ -132,8 +133,8 @@ export const useTrancStore = defineStore("Tranc", {
     },
 
     getLastTrasactsion(count) {
-      if(!{...this.allTrancs}){
-        return false
+      if (!{ ...this.allTrancs }) {
+        return false;
       }
       return this.allTrancs.slice(0, count);
     },
