@@ -59,13 +59,13 @@ async function handleLogOut() {
   right: 0;
   display: flex;
   flex-direction: column;
-  z-index: 10;
+  z-index: 110;
 }
 
 .black-back {
   background-color: rgba(0, 0, 0, 0.9);
   bottom: 0;
-  z-index: 10;
+  z-index: 110;
 }
 
 .nav-icons {
@@ -99,6 +99,7 @@ async function handleLogOut() {
   align-items: flex-start;
   justify-content: space-between;
   height: 100%;
+  transition: all 0.3s ease;
 }
 .top-nav__container {
   width: 100%;
