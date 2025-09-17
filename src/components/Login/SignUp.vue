@@ -55,10 +55,10 @@ const authStore = useAuthStore();
 async function handleSubmit() {
   const data = await authStore.signUp(username.value, password.value);
   if (data) {
-    // alert("Sign Up Successfully");
+    alert("Sign Up Successfully");
     router.push("/dashboard");
   } else {
-    // alert("Error");
+    alert("Invalid");
   }
 }
 </script>

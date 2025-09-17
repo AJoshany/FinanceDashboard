@@ -228,7 +228,13 @@ watchEffect(async () => {
   text-align: right;
   font-size: 12px;
   padding-right: 5px;
-  opacity: 60%;
+  opacity: 0.6;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.show-more-btn:hover {
+  opacity: 1;
 }
 
 .deposit__chart {

@@ -32,7 +32,7 @@ export const useAuthStore = defineStore("auth", () => {
     if (error) {
       console.log(error);
       isLoading.value = false;
-      return null;
+      return false;
     }
     setUser(data.user);
     isLoading.value = false;
