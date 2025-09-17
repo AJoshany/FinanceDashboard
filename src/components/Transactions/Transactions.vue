@@ -62,16 +62,15 @@
             </div>
           </div>
 
-          <div class="input-container">
+          <div class="date-input-container">
+            <label for="date" class="date-input-label">Date</label>
             <input
               v-model="date"
               type="date"
               id="date"
-              class="styled_input_bar"
-              placeholder="Date"
+              class="date-input"
               required
             />
-            <!-- <label for="date" class="input-label">Date</label> -->
           </div>
           <select
             v-model="category"
@@ -79,7 +78,7 @@
             v-if="typeOfTransaction === 'withdraw'"
             required
           >
-            <option disabled value="">Please select one</option>
+            <option disabled value="">Category</option>
             <option>Food</option>
             <option>Transport</option>
             <option>Housing</option>
@@ -90,7 +89,7 @@
             <option>Other</option>
           </select>
           <select v-model="category" class="category" v-else required>
-            <option disabled value="">Please select one</option>
+            <option disabled value="">Category</option>
             <option>Salary</option>
             <option>Business</option>
             <option>Investment</option>
@@ -242,7 +241,7 @@ function handleFilterShow() {
 .add-form {
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: 20px;
 }
 
 .tranc-container h1 {
@@ -270,15 +269,32 @@ function handleFilterShow() {
   transition: all 0.3s ease;
   box-sizing: border-box;
 }
-.styled_input_bar::placeholder {
-  color: grey;
-  transition: all 0.3s ease;
-}
 .styled_input_bar:focus {
   border-color: white;
 }
+
 .styled_input_bar:focus::placeholder {
   color: transparent;
+}
+
+.date-input-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.date-input {
+  width: 100%;
+  padding: 1em;
+  font-size: 1em;
+  border: 0.1em solid grey;
+  border-radius: 2em;
+}
+
+.date-input-label {
+  font-size: 1em;
+  color: grey;
 }
 .input-label {
   position: absolute;
