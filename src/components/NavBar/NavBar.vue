@@ -10,7 +10,8 @@
         <router-link to="/transactions">Transactions</router-link>
         <router-link to="/dashboard">About</router-link>
       </div>
-      <a @click="handleLogOut">logout</a>
+      <router-link @click="handleLogOut" to="/">logout</router-link>
+      <!-- <a @click="handleLogOut">logout</a> -->
     </nav>
 
     <button @click="toggleHandler" v-else>
@@ -21,8 +22,10 @@
 
 <script setup>
 import { ref, Transition } from "vue";
+import { useAuthStore } from "../../stores/auth";
 
 let mobileToggler = ref(false);
+const authStore = useAuthStore();
 
 function toggleHandler() {
   mobileToggler.value = !mobileToggler.value;
@@ -41,18 +44,21 @@ async function handleLogOut() {
   right: 0;
   display: flex;
   flex-direction: column;
+  z-index: 10;
 }
 
 .black-back {
   background-color: rgba(0, 0, 0, 0.9);
   bottom: 0;
+  z-index: 10;
 }
 
 .top-nav-main button {
   padding: 15px;
   width: 100%;
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: rgba(0, 0, 0, 1);
   border-bottom: 4px solid white;
+  z-index: 100;
 }
 .top-nav {
   display: flex;

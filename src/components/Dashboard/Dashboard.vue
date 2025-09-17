@@ -12,30 +12,73 @@
           {{ balance }} $
         </div>
         <div class="header__details">
-          <div class="header__detail text-green-400">
-            <div class="detail__icon">
+          <div class="header__detail">
+            <!-- <div class="detail__icon">
               <span
                 ><i class="fa fa-long-arrow-up" aria-hidden="true"></i
               ></span>
-            </div>
+            </div> -->
             <div class="detail__amout">{{ totalDeposits }} $</div>
           </div>
-          <div class="header__detail text-red-400">
-            <div class="detail__icon">
+          <div class="header__detail">
+            <!-- <div class="detail__icon">
               <span
                 ><i class="fa fa-long-arrow-down" aria-hidden="true"></i
               ></span>
-            </div>
+            </div> -->
             <div class="detail__amout">{{ totalWithdraws }} $</div>
           </div>
         </div>
       </div>
-      <div class="dash__chart">chart</div>
-      <div class="dash__last-trancs">last transactions</div>
-    </div>
-    <div class="charts">
-      <CircleChart :datas="categories" type="deposit" v-if="categories" />
-      <CircleChart :datas="categories" type="withdraw" v-if="categories" />
+      <div v-if="balance">
+        <div class="dash__charts">
+          <CircleChart
+            class="dash__chart"
+            :datas="categories"
+            type="deposit"
+            v-if="categories && totalDeposits"
+          />
+          <CircleChart
+            class="dash__chart withdraw__chart"
+            :datas="categories"
+            type="withdraw"
+            v-if="categories && totalWithdraws"
+          />
+        </div>
+        <div class="dash__last-trancs">
+          <h2>last transactions</h2>
+          <div class="last-trancs__sec">
+            <ul class="tranc-list">
+              <li v-for="tranc in lastTrancs" :key="tranc.id">
+                <div class="tranc-item">
+                  <span class="trancTitle">{{ tranc.title }}</span>
+                  <span
+                    class="trancAmount"
+                    :class="{
+                      'text-green-500': tranc.type === 'deposit',
+                      'text-red-500': tranc.type === 'withdraw',
+                    }"
+                    >{{ tranc.amount }}$</span
+                  >
+                  <span class="trancCategory">{{ tranc.category }}</span>
+                  <span class="trancDate">{{
+                    new Date(tranc.date)
+                      .toISOString()
+                      .split("T")[0]
+                      .split("-")
+                      .slice(1)
+                      .join("/")
+                  }}</span>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="empty-warning" v-else>
+        <p>You have no transaction yet</p>
+        <button @click="router.push('/transactions')">Add transaction</button>
+      </div>
     </div>
   </div>
 </template>
@@ -57,6 +100,9 @@ const trancStore = useTrancStore();
 const show = ref(false);
 const categories = ref();
 
+const allTrancs = ref();
+const lastTrancs = ref();
+
 const router = useRouter();
 
 async function handleLogOut() {
@@ -66,43 +112,64 @@ async function handleLogOut() {
 
 watchEffect(async () => {
   const data = await trancStore.getBalance();
+  allTrancs.value = trancStore.allTrancs.value;
   balance.value = data.balance;
   totalDeposits.value = data.totalDeposits;
   totalWithdraws.value = data.totalWithdraws;
   show.value = true;
   categories.value = trancStore.getCategoriesCount();
+  lastTrancs.value = trancStore.getLastTrasactsion(3);
 });
 </script>
 
 <style scoped>
 .dash__header {
   display: flex;
-  width: 100%;
+  width: 300px;
+  height: 300px;
   flex-direction: column;
   align-items: center;
-  gap: 30px;
-  border: 3px solid white;
+  gap: 10px;
+  border: 5px solid white;
   padding: 30px 20px;
-  border-radius: 10px;
+  border-radius: 50%;
+  margin-top: 15px;
 }
 .header__details {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 30px;
+  gap: 5px;
 }
 .header__detail {
   display: flex;
+  justify-content: center;
   align-items: center;
-  gap: 8px;
+  border: 4px solid white;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  gap: 5px;
+  font-weight: 600;
+}
+
+.header__detail:nth-child(1) {
+  color: limegreen;
+  border-color: limegreen;
+}
+
+.header__detail:nth-child(2) {
+  color: rgb(235, 0, 0);
+  border-color: rgb(223, 0, 0);
 }
 
 .header__balance {
-  font-size: 34px;
+  font-size: 40px;
   font-weight: 700;
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 5px;
 }
 
 .header__balance span {
@@ -116,4 +183,46 @@ watchEffect(async () => {
 .detail__icon {
   font-size: 16px;
 }
+
+.withdraw__chart {
+  margin-top: -50px;
+}
+
+.empty-warning {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  margin-top: 50px;
+}
+
+.empty-warning p {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.empty-warning button {
+  background-color: #4caf50;
+  padding: 10px 15px;
+  border-radius: 20px;
+  transition: all 0.3s ease;
+}
+
+.empty-warning button:hover {
+  background-color: rgb(0, 128, 255);
+}
+
+.dash__last-trancs {
+  text-align: center;
+}
+
+.dash__last-trancs h2 {
+  font-size: 20px;
+  font-weight: 600;
+}
+/* .dash__chart {
+  opacity: 0.5;
+  z-index: 1;
+} */
 </style>

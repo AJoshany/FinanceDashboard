@@ -36,7 +36,7 @@ export const useTrancStore = defineStore("Tranc", {
       const { data, error } = await supabase
         .from("transactions")
         .select("*")
-        .order("date", { ascending: true });
+        .order("date", { ascending: false });
 
       if (error) throw error;
       this.allTrancs = data;
@@ -65,19 +65,34 @@ export const useTrancStore = defineStore("Tranc", {
     },
     async getBalance() {
       await this.getTrancs();
-      const depositAmounts = this.allTrancs
-        .filter((tranc) => {
-          return tranc.type === "deposit";
-        })
-        .map((t) => Number(t.amount))
-        .reduce((acc, curr) => acc + curr);
 
-      const withdrawAmounts = this.allTrancs
-        .filter((tranc) => {
-          return tranc.type === "withdraw";
-        })
-        .map((t) => Number(t.amount))
-        .reduce((acc, curr) => acc + curr);
+      if (!{ ...this.allTrancs }) {
+        return {
+          balance: 0,
+          totalDeposits: 0,
+          totalWithdraws: 0,
+        };
+      }
+      const deposits = this.allTrancs.filter((tranc) => {
+        return tranc.type === "deposit";
+      });
+      let depositAmounts = 0;
+      if (deposits.length != 0) {
+        depositAmounts = deposits
+          .map((t) => Number(t.amount))
+          .reduce((acc, curr) => acc + curr);
+      }
+
+      const withdraws = this.allTrancs.filter((tranc) => {
+        return tranc.type === "withdraw";
+      });
+
+      let withdrawAmounts = 0;
+      if (withdraws.length != 0) {
+        withdrawAmounts = withdraws
+          .map((t) => Number(t.amount))
+          .reduce((acc, curr) => acc + curr);
+      }
 
       const totalBallance = depositAmounts - withdrawAmounts;
       this.balance = totalBallance;
@@ -114,6 +129,13 @@ export const useTrancStore = defineStore("Tranc", {
         }, {});
 
       return { depositCategories, withdrawCategories };
+    },
+
+    getLastTrasactsion(count) {
+      if(!{...this.allTrancs}){
+        return false
+      }
+      return this.allTrancs.slice(0, count);
     },
   },
 });

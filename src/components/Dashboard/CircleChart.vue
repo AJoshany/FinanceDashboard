@@ -28,6 +28,8 @@ const colors = [
   "#0BA6DF",
 ];
 
+const withdrawColors = [...colors].reverse();
+
 const { datas, type } = defineProps({
   datas: {
     required: true,
@@ -40,8 +42,6 @@ const categoryData =
     ? { ...datas.depositCategories }
     : { ...datas.withdrawCategories };
 
-console.log(categoryData);
-
 const setChartData = () => {
   const documentStyle = getComputedStyle(document.body);
 
@@ -50,7 +50,10 @@ const setChartData = () => {
     datasets: [
       {
         data: Object.values(categoryData),
-        backgroundColor: colors.slice(0, Object.values(categoryData).length),
+        backgroundColor:
+          type === "deposit"
+            ? colors.slice(0, Object.values(categoryData).length)
+            : withdrawColors.slice(0, Object.values(categoryData).length),
         // hoverBackgroundColor: ["pink", "yellow", "purple"],
       },
     ],

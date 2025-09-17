@@ -237,7 +237,7 @@ function handleFilterShow() {
 }
 </script>
 
-<style scoped>
+<style>
 .add-form {
   display: flex;
   flex-direction: column;
