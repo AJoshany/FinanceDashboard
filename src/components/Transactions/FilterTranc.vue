@@ -185,6 +185,7 @@ function handleFilter() {
   align-items: center;
   position: absolute;
   bottom: 130px;
+  padding: 20px;
 }
 
 .filter-btn {
