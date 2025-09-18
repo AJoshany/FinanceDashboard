@@ -367,7 +367,9 @@ function handleFilterShow() {
 
 .filter-comp {
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 0;
+  right: 0;
   background-color: rgb(47, 47, 47);
 }
 

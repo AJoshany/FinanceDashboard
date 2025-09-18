@@ -112,8 +112,10 @@ function handleFilter() {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-around;
+  justify-content: flex-start;
   padding: 20px;
+  margin: 60px 0;
+  height: 100%;
 }
 .filter-container {
   display: flex;
@@ -121,6 +123,7 @@ function handleFilter() {
   align-items: center;
   gap: 30px;
   width: 100%;
+  padding-bottom: 130px;
 }
 .filter-container h1,
 .filter-container h2 {
@@ -151,6 +154,7 @@ function handleFilter() {
 .categories-main {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   gap: 20px;
 }
 .radio-group {
@@ -167,8 +171,11 @@ function handleFilter() {
 
 .category-group {
   display: flex;
-  flex-direction: column;
-  gap: 20px;
+  align-items: center;
+  justify-content: center;
+  /* flex-direction: column; */
+  flex-wrap: wrap;
+  gap: 30px;
 }
 
 .btn-group {
@@ -176,6 +183,8 @@ function handleFilter() {
   width: 100%;
   justify-content: space-around;
   align-items: center;
+  position: absolute;
+  bottom: 130px;
 }
 
 .filter-btn {
